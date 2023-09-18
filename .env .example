@@ -1,0 +1,4 @@
+DB_DATABASE=laravel
+DB_USER=sampleuser
+DB_PASSWORD=password
+DB_ROOT_PASSWORD=password
