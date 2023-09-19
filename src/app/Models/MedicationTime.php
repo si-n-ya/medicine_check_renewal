@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MedicationTime extends Model
+class MedicineTime extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'medication_id', 'time_of_day'
+        'medicine_id', 'time_of_day'
     ];
 
     protected $casts = [
         'time_of_day' => 'time',
     ];
 
-    public function medication()
+    public function medicine()
     {
-        return $this->belongsTo(Medication::class);
+        return $this->belongsTo(Medicine::class);
     }
 }

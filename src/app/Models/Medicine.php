@@ -25,11 +25,11 @@ class Medicine extends Model
 
     public function daysOfWeek()
     {
-        return $this->belongsToMany(DayOfWeek::class, 'medication_days');
+        return $this->belongsToMany(DayOfWeek::class, 'medicine_days');
     }
 
-    public function medicationTimes()
+    public function medicineTimes()
     {
-        return $this->hasMany(MedicationTime::class);
+        return $this->hasMany(MedicineTime::class);
     }
 }

@@ -13,8 +13,8 @@ class DayOfWeek extends Model
         'day_name'
     ];
 
-    public function medications()
+    public function medicines()
     {
-        return $this->belongsToMany(Medication::class, 'medication_days');
+        return $this->belongsToMany(Medicine::class, 'medicine_days');
     }
 }
