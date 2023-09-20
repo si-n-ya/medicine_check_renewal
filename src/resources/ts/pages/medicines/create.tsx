@@ -7,11 +7,11 @@ const MedicineCreatePage = () => {
     <main className="container form_container margin_top">
     <div className="flex_container">
         <h1 className="title_shape regist_title_black">お薬登録</h1>
-        <p className="back_box btn_right">
+        {/* <p className="back_box btn_right">
             <a href="/" className="btn back">メニューへ戻る</a>
-        </p>
+        </p> */}
     </div>
-    <form action="/add" method="post" className="form margin_top">
+    <form className="form margin_top">
         <div className="d_container flexiblebox">
             <dt className="dt regist_dt_bg"><label htmlFor="name">薬の名前</label>
             </dt>
