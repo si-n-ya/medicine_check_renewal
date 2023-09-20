@@ -14,7 +14,7 @@ class MedicineTime extends Model
     ];
 
     protected $casts = [
-        'time_of_day' => 'time',
+        'time_of_day' => 'int',
     ];
 
     public function medicine()

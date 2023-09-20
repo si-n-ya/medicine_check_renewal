@@ -1,9 +1,10 @@
 export type Medicine = {
-  id: number
+  id?: number
+  unit_id: number
   name: string
-  start_date: Date
-  dose_amount: number
-  stock_amount: number
-  created_at: Date
-  updated_at: Date
+  start_date: string
+  dose_amount: number | string
+  stock_amount: number| string
+  created_at?: Date
+  updated_at?: Date
 }

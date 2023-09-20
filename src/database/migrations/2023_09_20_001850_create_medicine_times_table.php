@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('medicine_times', function (Blueprint $table) {
             $table->id();
             $table->foreignId('medicine_id')->constrained()->onDelete('cascade');
-            $table->time('time_of_day');
+            $table->integer('time_of_day');
             $table->timestamps();
         });
     }
