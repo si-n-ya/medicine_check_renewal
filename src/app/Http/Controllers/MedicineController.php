@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
+use App\Models\DayOfWeek;
 use App\Models\Medicine;
 use Exception;
 use Illuminate\Support\Facades\DB;

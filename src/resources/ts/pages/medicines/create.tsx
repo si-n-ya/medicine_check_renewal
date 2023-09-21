@@ -1,7 +1,11 @@
 import React, {useEffect, useState, ChangeEvent} from 'react';
 import dayjs from 'dayjs';
 import { Medicine } from '../../types/Medicine';
+import { DayOfWeek } from '../../types/DayOfWeek';
+import { Unit } from '../../types/Unit';
 import { useStoreMedicine } from '../../queries/MedicineQuery';
+import { getDaysOfWeek } from '../../api/DayOfWeekAPI';
+import { getMedicineUnits } from '../../api/UnitAPI';
 
 const MedicineCreatePage = () => {
   console.log('medicine create render');
@@ -12,8 +16,33 @@ const MedicineCreatePage = () => {
     start_date: dayjs().format('YYYY-MM-DD'),
     dose_amount: '',
     stock_amount: '',
+    day_of_weeks: [],
+    times: [],
   });
   const storeMedicine = useStoreMedicine()
+  const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
+  const [medicineUnits, setMedicineUnits] = useState<Unit[]>([]);
+  const [isStopping, setIsStopping] = useState(true)
+
+  const fetchDaysOfWeek = async () => {
+    const data = await getDaysOfWeek();
+    console.log(data);
+    setDaysOfWeek(data)
+    console.log(daysOfWeek)
+    setIsStopping(false)
+  };
+
+  const fetchMedicineUnits = async () => {
+    const data = await getMedicineUnits();
+    console.log(data)
+    setMedicineUnits(data)
+  };
+
+  useEffect(() => {
+    fetchDaysOfWeek();
+    fetchMedicineUnits()
+    console.log(daysOfWeek)
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -22,11 +51,28 @@ const MedicineCreatePage = () => {
       [name]: value
     });
   };
+  
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    const name = e.target.name;  // チェックボックスの name 属性を取得
+  
+    setFormData(prevState => {
+      const existingValues = prevState[name] || [];  // 既存の値を取得
+  
+      if (e.target.checked) {
+        return { ...prevState, [name]: [...existingValues, value] };
+      } else {
+        return { ...prevState, [name]: existingValues.filter(item => item !== value) };
+      }
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     storeMedicine.mutate(formData)
   };
+
+  if (isStopping) return
 
   return (
     <>
@@ -39,7 +85,7 @@ const MedicineCreatePage = () => {
     </div>
     <form className="form margin_top" onSubmit={handleSubmit}>
         <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg"><label htmlFor="name">薬の名前</label>
+            <dt className="dt regist_dt_bg"><label htmlFor="name">お薬名</label>
             </dt>
             <dd className="dd">
                 <input
@@ -51,6 +97,48 @@ const MedicineCreatePage = () => {
                   onChange={handleChange}
                 />
                 <p className="error"></p>
+            </dd>
+        </div>
+        <div className="d_container flexiblebox">
+            <dt className="dt regist_dt_bg">服用する曜日</dt>
+            <dd className="dd week_dd">
+               <div className="check_layout">
+               {daysOfWeek.map((day: DayOfWeek, index) => (
+                <React.Fragment key={day.id}>
+                  <input
+                    type="checkbox"
+                    name="day_of_weeks"
+                    id={day.id.toString()}
+                    className="regist_week_check"
+                    onChange={handleCheckboxChange}
+                    checked={formData.day_of_weeks.includes(index)}
+                    value={day.id}
+                  />
+                  <label htmlFor={day.id.toString()}>{day.day_name}</label>
+                </React.Fragment>
+              ))}
+
+              </div>
+            </dd>
+        </div>
+        <div className="d_container flexiblebox">
+        <dt className="dt regist_dt_bg">服用時刻</dt>
+            <dd className="dd">
+              <div className="check_layout">
+              {Array.from({ length: 24 }).map((_, index) => (
+                <React.Fragment key={index}>
+                  <input
+                    type="checkbox"
+                    name="times[]"
+                    id={`${index}`}
+                    value={`${index}`}
+                    checked={formData.times.includes(index)}
+                    onChange={handleCheckboxChange}
+                  />
+                  <label htmlFor={`${index}`}>{index}:00</label>
+                </React.Fragment>
+              ))}
+              </div>
             </dd>
         </div>
         <div className="d_container flexiblebox">

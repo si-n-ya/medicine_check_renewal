@@ -9,6 +9,7 @@ class DayOfWeek extends Model
 {
     use HasFactory;
 
+    protected $table = 'days_of_week';
     protected $fillable = [
         'day_name'
     ];
