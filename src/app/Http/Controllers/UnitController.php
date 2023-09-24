@@ -10,7 +10,7 @@ class UnitController extends Controller
 {
     public function fetch()
     {
-        $units = Unit::get();
+        $units = Unit::orderBy('id', 'asc')->get();
         return UnitResource::collection($units);
     }
 }

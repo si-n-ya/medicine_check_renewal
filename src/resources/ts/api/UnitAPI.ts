@@ -4,7 +4,7 @@ const getMedicineUnits = async () => {
   const { data } = await axios.get(
     `/api/medicineUnits/`,
   );
-  return data;
+  return data.data;
 }
 
 export {

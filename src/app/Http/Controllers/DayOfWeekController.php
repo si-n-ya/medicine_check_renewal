@@ -10,7 +10,7 @@ class DayOfWeekController extends Controller
 {
     public function fetch()
     {
-        $days_of_week = DayOfWeek::get();
+        $days_of_week = DayOfWeek::orderBy('id', 'asc')->get();
         return DayOfWeekResource::collection($days_of_week);
     }
 }

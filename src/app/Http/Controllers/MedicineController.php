@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
-use App\Models\DayOfWeek;
 use App\Models\Medicine;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -46,12 +45,7 @@ class MedicineController extends Controller
                 'stock_amount' => $request->stock_amount,
             ])->save();
 
-            // TODO 一時的
-            // $medicine->daysOfWeek()->sync($request->week_ids);
-            $medicine->daysOfWeek()->sync(['1', '4']);
-
-            // TODO 一時的
-            $request->times = ['8', '18'];
+            $medicine->daysOfWeek()->sync($request->day_of_weeks);
             foreach ($request->times as $time) {
                 $medicine->medicineTimes()->create([
                     'time_of_day' => $time,
@@ -62,7 +56,7 @@ class MedicineController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong.'], 500);
+            return response()->json(['error' => '登録に失敗しました。'], 500);
         }
 
         return $medicine

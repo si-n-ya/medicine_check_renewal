@@ -58,7 +58,7 @@ const MedicineCreatePage = () => {
   
     setFormData(prevState => {
       const existingValues = prevState[name] || [];  // 既存の値を取得
-  
+
       if (e.target.checked) {
         return { ...prevState, [name]: [...existingValues, value] };
       } else {
@@ -111,7 +111,7 @@ const MedicineCreatePage = () => {
                     id={day.id.toString()}
                     className="regist_week_check"
                     onChange={handleCheckboxChange}
-                    checked={formData.day_of_weeks.includes(index)}
+                    checked={formData.day_of_weeks.includes(day.id)}
                     value={day.id}
                   />
                   <label htmlFor={day.id.toString()}>{day.day_name}</label>
@@ -125,17 +125,17 @@ const MedicineCreatePage = () => {
         <dt className="dt regist_dt_bg">服用時刻</dt>
             <dd className="dd">
               <div className="check_layout">
-              {Array.from({ length: 24 }).map((_, index) => (
-                <React.Fragment key={index}>
+              {Array.from({ length: 24 }, (_, i) => i).map((val, index) => (
+                <React.Fragment key={val}>
                   <input
                     type="checkbox"
-                    name="times[]"
-                    id={`${index}`}
-                    value={`${index}`}
-                    checked={formData.times.includes(index)}
+                    name="times"
+                    id={`time${val}`}
+                    value={val}
+                    checked={formData.times.includes(val)}
                     onChange={handleCheckboxChange}
                   />
-                  <label htmlFor={`${index}`}>{index}:00</label>
+                  <label htmlFor={`time${val}`}>{val}:00</label>
                 </React.Fragment>
               ))}
               </div>
@@ -171,10 +171,11 @@ const MedicineCreatePage = () => {
                   value={formData.unit_id}
                   onChange={handleChange}
                 >
-                    <option value="1">錠</option>
-                    <option value="2">g</option>
-                    <option value="3">ml</option>
-                    <option value="4">包</option>
+               {medicineUnits.map((unit: Unit, index) => (
+                  <React.Fragment key={unit.id}>
+                    <option value={unit.id}>{unit.unit_name}</option>
+                  </React.Fragment>
+                ))}
                 </select>
             </dd>
         </div>
