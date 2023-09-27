@@ -22,7 +22,15 @@ class StoreMedicineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'unit_id' => 'required|integer|exists:units,id',
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date_format:Y-m-d',
+            'dose_amount' => 'required|numeric|between:0,999999.99',
+            'stock_amount' => 'required|numeric|between:0,999999.99',
+            'day_of_weeks' => 'required|array|min:1',
+            'day_of_weeks.*' => 'required|integer|exists:days_of_week,id',
+            'times' => 'required|array|min:1',
+            'times.*' => 'required|integer|between:0,23',
         ];
     }
 }

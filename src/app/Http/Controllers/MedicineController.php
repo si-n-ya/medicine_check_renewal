@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
 use App\Models\Medicine;
-use App\Services\Medicine\CreateService;
+use App\Services\Medicine\CreateMedicineService;
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class MedicineController extends Controller
 {
@@ -31,13 +29,14 @@ class MedicineController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMedicineRequest $request, CreateService $service)
+    public function store(StoreMedicineRequest $request, CreateMedicineService $createMedicineService)
     {
-        $service->handle($request);
-
-        return $medicine
-        ? response()->json($medicine, 201)
-        : response()->json($medicine, 500);
+        try {
+            $createMedicineService->handle($request);
+            return response()->json(['success' => '登録に成功しました。']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
