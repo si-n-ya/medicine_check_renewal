@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MedicineAmountDecimalRule;
+use App\Rules\MedicineAmountRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMedicineRequest extends FormRequest
@@ -25,8 +27,8 @@ class StoreMedicineRequest extends FormRequest
             'unit_id' => 'required|integer|exists:units,id',
             'name' => 'required|string|max:255',
             'start_date' => 'required|date_format:Y-m-d',
-            'dose_amount' => 'required|numeric|between:0,999999.99',
-            'stock_amount' => 'required|numeric|between:0,999999.99',
+            'dose_amount' => ['required', 'numeric', new MedicineAmountRule()],
+            'stock_amount' => ['required', 'numeric', new MedicineAmountRule()],
             'day_of_weeks' => 'required|array|min:1',
             'day_of_weeks.*' => 'required|integer|exists:days_of_week,id',
             'times' => 'required|array|min:1',

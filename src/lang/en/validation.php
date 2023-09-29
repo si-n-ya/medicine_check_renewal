@@ -180,6 +180,14 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'お薬名',
+        'day_of_weeks' => '服用曜日',
+        'times' => '服用時刻',
+        'start_date' => '使用開始日',
+        'dose_amount' => '服用量',
+        'unit_id' => '単位',
+        'stock_amount' => '在庫数',
+    ],
 
 ];

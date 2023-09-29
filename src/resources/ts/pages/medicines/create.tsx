@@ -19,10 +19,12 @@ const MedicineCreatePage = () => {
     day_of_weeks: [],
     times: [],
   });
-  const storeMedicine = useStoreMedicine()
+  const storeMedicine = useStoreMedicine();
+  const { error } = storeMedicine;
   const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
   const [medicineUnits, setMedicineUnits] = useState<Unit[]>([]);
   const [isStopping, setIsStopping] = useState(true)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const fetchDaysOfWeek = async () => {
     const data = await getDaysOfWeek();
@@ -43,6 +45,13 @@ const MedicineCreatePage = () => {
     fetchMedicineUnits()
     console.log(daysOfWeek)
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      // axiosのエラーが発生した場合
+      setErrors(error.response.data.errors);
+    }
+  }, [error]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -79,9 +88,6 @@ const MedicineCreatePage = () => {
     <main className="container form_container margin_top">
     <div className="flex_container">
         <h1 className="title_shape regist_title_black">お薬登録</h1>
-        {/* <p className="back_box btn_right">
-            <a href="/" className="btn back">メニューへ戻る</a>
-        </p> */}
     </div>
     <form className="form margin_top" onSubmit={handleSubmit}>
         <div className="d_container flexiblebox">
@@ -96,11 +102,11 @@ const MedicineCreatePage = () => {
                   value={formData.name}
                   onChange={handleChange}
                 />
-                <p className="error"></p>
+                {errors.name && <p className="error">{errors.name}</p>}
             </dd>
         </div>
         <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg">服用する曜日</dt>
+            <dt className="dt regist_dt_bg">服用曜日</dt>
             <dd className="dd week_dd">
                <div className="check_layout">
                {daysOfWeek.map((day: DayOfWeek, index) => (
@@ -117,8 +123,8 @@ const MedicineCreatePage = () => {
                   <label htmlFor={day.id.toString()}>{day.day_name}</label>
                 </React.Fragment>
               ))}
-
               </div>
+              {errors.day_of_weeks && <p className="error">{errors.day_of_weeks}</p>}
             </dd>
         </div>
         <div className="d_container flexiblebox">
@@ -139,6 +145,7 @@ const MedicineCreatePage = () => {
                 </React.Fragment>
               ))}
               </div>
+              {errors.times && <p className="error">{errors.times}</p>}
             </dd>
         </div>
         <div className="d_container flexiblebox">
@@ -153,6 +160,7 @@ const MedicineCreatePage = () => {
                   value={formData.start_date}
                   onChange={handleChange}
                 />
+                {errors.start_date && <p className="error">{errors.start_date}</p>}
             </dd>
         </div>
         <div className="d_container flexiblebox">
@@ -177,6 +185,8 @@ const MedicineCreatePage = () => {
                   </React.Fragment>
                 ))}
                 </select>
+                {errors.dose_amount && <p className="error">{errors.dose_amount}</p>}
+                {errors.unit_id && <p className="error">{errors.unit_id}</p>}
             </dd>
         </div>
         <div className="flexiblebox">
@@ -190,6 +200,7 @@ const MedicineCreatePage = () => {
                   value={formData.stock_amount}
                   onChange={handleChange}
                 />
+                {errors.stock_amount && <p className="error">{errors.stock_amount}</p>}
             </dd>
         </div>
         <p className="btn_center"><input type="submit" className="submit regist_sub_design regist_submit_color" value="登録" />
