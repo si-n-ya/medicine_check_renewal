@@ -27,7 +27,11 @@ class MedicineController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created medicine in storage.
+     *
+     * @param  \App\Http\Requests\StoreMedicineRequest  $request
+     * @param  \App\Services\Medicine\CreateMedicineService  $createMedicineService
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreMedicineRequest $request, CreateMedicineService $createMedicineService)
     {
