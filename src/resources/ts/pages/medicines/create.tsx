@@ -1,0 +1,160 @@
+import React, {useEffect, useState, ChangeEvent} from 'react';
+import dayjs from 'dayjs';
+import { Medicine } from '../../types/Medicine';
+import { DayOfWeek } from '../../types/DayOfWeek';
+import { Unit } from '../../types/Unit';
+import { useStoreMedicine } from '../../queries/MedicineQuery';
+import { getDaysOfWeek } from '../../api/DayOfWeekAPI';
+import { getMedicineUnits } from '../../api/UnitAPI';
+import { MedicineInput } from '../components/MedicineInput';
+import { MedicineCheckboxGroup } from '../components/MedicineCheckboxGroup';
+import { MedicineDoseAmount } from '../components/MedicineDoseAmount';
+import { MedicineFormButton } from '../components/MedicineFormButton';
+
+const MedicineCreatePage = () => {
+  console.log('medicine create render');
+
+  const [formData, setFormData] = useState<Medicine>({
+    name: '',
+    unit_id: 1,
+    start_date: dayjs().format('YYYY-MM-DD'),
+    dose_amount: '',
+    stock_amount: '',
+    day_of_weeks: [],
+    times: [],
+  });
+  const storeMedicine = useStoreMedicine();
+  const { error } = storeMedicine;
+  const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
+  const [medicineUnits, setMedicineUnits] = useState<Unit[]>([]);
+  const [isStopping, setIsStopping] = useState(true)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const fetchDaysOfWeek = async () => {
+    const data = await getDaysOfWeek();
+    console.log(data);
+    setDaysOfWeek(data)
+    console.log(daysOfWeek)
+    setIsStopping(false)
+  };
+
+  const fetchMedicineUnits = async () => {
+    const data = await getMedicineUnits();
+    console.log(data)
+    setMedicineUnits(data)
+  };
+
+  useEffect(() => {
+    fetchDaysOfWeek();
+    fetchMedicineUnits()
+    console.log(daysOfWeek)
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      // axiosのエラーが発生した場合
+      setErrors(error.response.data.errors);
+    }
+  }, [error]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    const name = e.target.name;  // チェックボックスの name 属性を取得
+  
+    setFormData(prevState => {
+      const existingValues = prevState[name] || [];  // 既存の値を取得
+
+      if (e.target.checked) {
+        return { ...prevState, [name]: [...existingValues, value] };
+      } else {
+        return { ...prevState, [name]: existingValues.filter(item => item !== value) };
+      }
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    storeMedicine.mutate(formData)
+  };
+
+  if (isStopping) return
+
+  return (
+    <>
+    <main className="container form_container margin_top">
+    <div className="flex_container">
+        <h1 className="title_shape regist_title_black">お薬登録</h1>
+    </div>
+    <form className="form margin_top" onSubmit={handleSubmit}>
+        <MedicineInput
+          labelText="お薬名"
+          name="name"
+          id = "name"
+          type="text"
+          value={formData.name}
+          error={errors.name}
+          onChange={handleChange}
+        />
+        <MedicineCheckboxGroup
+          labelText="服用曜日"
+          name="day_of_weeks"
+          items={daysOfWeek}
+          formDataItem={formData.day_of_weeks}
+          error={errors.day_of_weeks}
+          onChange={handleCheckboxChange}
+        />
+        <MedicineCheckboxGroup
+          labelText="服用時刻"
+          name="times"
+          // items={daysOfWeek}
+          items={Array.from({ length: 24 }, (_, i) => {
+            return { id: i, day_name: `${i}:00` };
+          })}
+          formDataItem={formData.times}
+          error={errors.times}
+          onChange={handleCheckboxChange}
+        />
+        <MedicineInput
+          labelText="使用開始日"
+          name="start_date"
+          id = "get_date"
+          type="date"
+          value={formData.start_date}
+          error={errors.start_date}
+          onChange={handleChange}
+        />
+        <MedicineDoseAmount
+          labelText="服用量"
+          units={medicineUnits}
+          doseAmount={formData.dose_amount}
+          errorDose={errors.dose_amount}
+          errorUnit={errors.unit_id}
+          onChange={handleChange}
+        />
+        <MedicineInput
+          labelText="在庫数"
+          name="stock_amount"
+          id="stock"
+          type="number"
+          value={formData.stock_amount}
+          error={errors.stock_amount}
+          onChange={handleChange}
+        />
+        <MedicineFormButton
+          buttonText="登録"
+        />
+    </form>
+</main>
+    </>
+  )
+}
+
+export default MedicineCreatePage

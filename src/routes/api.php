@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::apiResource('medicines', 'App\Http\Controllers\MedicineController');
+Route::get('daysOfWeek', ['App\Http\Controllers\DayOfWeekController', 'fetch']);
+Route::get('medicineUnits', ['App\Http\Controllers\UnitController', 'fetch']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

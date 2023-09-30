@@ -14,9 +14,13 @@
         "laravel-vite-plugin": "^0.8.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-query": "^3.39.3",
         "react-router-dom": "^6.16.0",
         "sass": "^1.67.0",
         "typescript": "^5.2.2",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.10"
     }
 }
