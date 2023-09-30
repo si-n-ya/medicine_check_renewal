@@ -53,7 +53,6 @@ class CreateMedicineTest extends TestCase
         $this->assertEquals($data['start_date'], $medicine->start_date->toDateString());
 
         // 登録された薬のデータを取得し、曜日と時間が正しいか、レコードの数が正しいか検証
-        $medicine = Medicine::first();
         $this->assertCount(count($data['day_of_weeks']), $medicine->daysOfWeek);
         $this->assertEquals($data['day_of_weeks'], $medicine->daysOfWeek->pluck('id')->toArray());
 

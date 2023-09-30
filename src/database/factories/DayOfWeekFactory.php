@@ -20,7 +20,7 @@ class DayOfWeekFactory extends Factory
     public function definition(): array
     {
         return [
-            'day_name' => $this->faker->dayOfWeek,
+            'day_name' => $this->faker->unique()->dayOfWeek,
         ];
     }
 }

@@ -21,7 +21,7 @@ class MedicineAmountRule implements ValidationRule
         $parts = explode('.', $value);
         
         // 整数の長さを確認
-        if (strlen($parts[0]) > $integerPart) {
+        if ((strlen($parts[0]) > $integerPart) || ($parts[0] < 0)) {
             $fail(__(':attributeは0から999999.99の間で入力してください。', [
                 // 'attribute' => $attribute,
                 'max' => $integerPart
