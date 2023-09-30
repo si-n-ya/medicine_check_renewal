@@ -6,6 +6,10 @@ import { Unit } from '../../types/Unit';
 import { useStoreMedicine } from '../../queries/MedicineQuery';
 import { getDaysOfWeek } from '../../api/DayOfWeekAPI';
 import { getMedicineUnits } from '../../api/UnitAPI';
+import { MedicineInput } from '../components/MedicineInput';
+import { MedicineCheckboxGroup } from '../components/MedicineCheckboxGroup';
+import { MedicineDoseAmount } from '../components/MedicineDoseAmount';
+import { MedicineFormButton } from '../components/MedicineFormButton';
 
 const MedicineCreatePage = () => {
   console.log('medicine create render');
@@ -90,121 +94,63 @@ const MedicineCreatePage = () => {
         <h1 className="title_shape regist_title_black">お薬登録</h1>
     </div>
     <form className="form margin_top" onSubmit={handleSubmit}>
-        <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg"><label htmlFor="name">お薬名</label>
-            </dt>
-            <dd className="dd">
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="input_text"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-                {errors.name && <p className="error">{errors.name}</p>}
-            </dd>
-        </div>
-        <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg">服用曜日</dt>
-            <dd className="dd week_dd">
-               <div className="check_layout">
-               {daysOfWeek.map((day: DayOfWeek, index) => (
-                <React.Fragment key={day.id}>
-                  <input
-                    type="checkbox"
-                    name="day_of_weeks"
-                    id={day.id.toString()}
-                    className="regist_week_check"
-                    onChange={handleCheckboxChange}
-                    checked={formData.day_of_weeks.includes(day.id)}
-                    value={day.id}
-                  />
-                  <label htmlFor={day.id.toString()}>{day.day_name}</label>
-                </React.Fragment>
-              ))}
-              </div>
-              {errors.day_of_weeks && <p className="error">{errors.day_of_weeks}</p>}
-            </dd>
-        </div>
-        <div className="d_container flexiblebox">
-        <dt className="dt regist_dt_bg">服用時刻</dt>
-            <dd className="dd">
-              <div className="check_layout">
-              {Array.from({ length: 24 }, (_, i) => i).map((val, index) => (
-                <React.Fragment key={val}>
-                  <input
-                    type="checkbox"
-                    name="times"
-                    id={`time${val}`}
-                    value={val}
-                    checked={formData.times.includes(val)}
-                    onChange={handleCheckboxChange}
-                  />
-                  <label htmlFor={`time${val}`}>{val}:00</label>
-                </React.Fragment>
-              ))}
-              </div>
-              {errors.times && <p className="error">{errors.times}</p>}
-            </dd>
-        </div>
-        <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg"><label htmlFor="start_date">使用開始日</label>
-            </dt>
-            <dd className="dd">
-                <input
-                  type="date"
-                  name="start_date"
-                  id="get_date"
-                  className="input_text"
-                  value={formData.start_date}
-                  onChange={handleChange}
-                />
-                {errors.start_date && <p className="error">{errors.start_date}</p>}
-            </dd>
-        </div>
-        <div className="d_container flexiblebox">
-            <dt className="dt regist_dt_bg"><label htmlFor="dose_amount">服用量</label></dt>
-            <dd className="dd">
-                <input
-                  type="number"
-                  name="dose_amount"
-                  className="input_text"
-                  value={formData.dose_amount}
-                  onChange={handleChange}
-                />
-                <select
-                  name="unit_id"
-                  className="select"
-                  value={formData.unit_id}
-                  onChange={handleChange}
-                >
-               {medicineUnits.map((unit: Unit, index) => (
-                  <React.Fragment key={unit.id}>
-                    <option value={unit.id}>{unit.unit_name}</option>
-                  </React.Fragment>
-                ))}
-                </select>
-                {errors.dose_amount && <p className="error">{errors.dose_amount}</p>}
-                {errors.unit_id && <p className="error">{errors.unit_id}</p>}
-            </dd>
-        </div>
-        <div className="flexiblebox">
-            <dt className="dt regist_dt_bg"><label htmlFor="stock_amount">在庫数</label></dt>
-            <dd className="dd">
-                <input
-                  type="number"
-                  name="stock_amount"
-                  id="stock"
-                  className="input_text"
-                  value={formData.stock_amount}
-                  onChange={handleChange}
-                />
-                {errors.stock_amount && <p className="error">{errors.stock_amount}</p>}
-            </dd>
-        </div>
-        <p className="btn_center"><input type="submit" className="submit regist_sub_design regist_submit_color" value="登録" />
-        </p>
+        <MedicineInput
+          labelText="お薬名"
+          name="name"
+          id = "name"
+          type="text"
+          value={formData.name}
+          error={errors.name}
+          onChange={handleChange}
+        />
+        <MedicineCheckboxGroup
+          labelText="服用曜日"
+          name="day_of_weeks"
+          items={daysOfWeek}
+          formDataItem={formData.day_of_weeks}
+          error={errors.day_of_weeks}
+          onChange={handleCheckboxChange}
+        />
+        <MedicineCheckboxGroup
+          labelText="服用時刻"
+          name="times"
+          // items={daysOfWeek}
+          items={Array.from({ length: 24 }, (_, i) => {
+            return { id: i, day_name: `${i}:00` };
+          })}
+          formDataItem={formData.times}
+          error={errors.times}
+          onChange={handleCheckboxChange}
+        />
+        <MedicineInput
+          labelText="使用開始日"
+          name="start_date"
+          id = "get_date"
+          type="date"
+          value={formData.start_date}
+          error={errors.start_date}
+          onChange={handleChange}
+        />
+        <MedicineDoseAmount
+          labelText="服用量"
+          units={medicineUnits}
+          doseAmount={formData.dose_amount}
+          errorDose={errors.dose_amount}
+          errorUnit={errors.unit_id}
+          onChange={handleChange}
+        />
+        <MedicineInput
+          labelText="在庫数"
+          name="stock_amount"
+          id="stock"
+          type="number"
+          value={formData.stock_amount}
+          error={errors.stock_amount}
+          onChange={handleChange}
+        />
+        <MedicineFormButton
+          buttonText="登録"
+        />
     </form>
 </main>
     </>
