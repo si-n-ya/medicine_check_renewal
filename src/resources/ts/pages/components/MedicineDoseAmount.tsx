@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Unit } from "../../types/Unit";
 
 interface MedicineDoseAmountProps {
@@ -11,8 +11,9 @@ interface MedicineDoseAmountProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
-export const MedicineDoseAmount: React.FC<MedicineDoseAmountProps> = (props) => {
+export const MedicineDoseAmount: React.FC<MedicineDoseAmountProps> = memo((props) => {
   const { labelText, doseAmount, units, errorDose, errorUnit, onChange } = props;
+  console.log('MedicineDoseAmount')
   return (
       <div className="d_container flexiblebox">
           <dt className="dt regist_dt_bg"><label htmlFor="dose_amount">{labelText}</label></dt>
@@ -30,4 +31,4 @@ export const MedicineDoseAmount: React.FC<MedicineDoseAmountProps> = (props) => 
           </dd>
       </div>
   );
-};
+});

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, ChangeEvent} from 'react';
+import React, {useEffect, useState, useCallback, useMemo, ChangeEvent} from 'react';
 import dayjs from 'dayjs';
 import { Medicine } from '../../types/Medicine';
 import { DayOfWeek } from '../../types/DayOfWeek';
@@ -57,15 +57,21 @@ const MedicineCreatePage = () => {
     }
   }, [error]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
+  const timeItems = useMemo(() => {
+    return Array.from({ length: 24 }, (_, i) => {
+      return { id: i, day_name: `${i}:00` };
     });
-  };
+  }, []); // 依存配列を空にし、コンポーネントのマウント時に一度だけ作成する 
+
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+    }, []);// 関数内で直接 formData の状態を参照せず、setFormData で関数を使用しているため、依存配列は空にする
   
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
     const name = e.target.name;  // チェックボックスの name 属性を取得
   
@@ -78,7 +84,7 @@ const MedicineCreatePage = () => {
         return { ...prevState, [name]: existingValues.filter(item => item !== value) };
       }
     });
-  };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,10 +120,7 @@ const MedicineCreatePage = () => {
         <MedicineCheckboxGroup
           labelText="服用時刻"
           name="times"
-          // items={daysOfWeek}
-          items={Array.from({ length: 24 }, (_, i) => {
-            return { id: i, day_name: `${i}:00` };
-          })}
+          items={timeItems}
           formDataItem={formData.times}
           error={errors.times}
           onChange={handleCheckboxChange}

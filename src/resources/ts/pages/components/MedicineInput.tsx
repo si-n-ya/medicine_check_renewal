@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 interface MedicineInputProps {
   labelText: string;
@@ -10,7 +10,7 @@ interface MedicineInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const MedicineInput: React.FC<MedicineInputProps> = (props) => {
+export const MedicineInput: React.FC<MedicineInputProps> = memo((props) => {
   const {labelText, name, id, type, value, error, onChange} = props;
   console.log('MedicineInput');
   return (
@@ -29,4 +29,4 @@ export const MedicineInput: React.FC<MedicineInputProps> = (props) => {
       </dd>
     </div>
   );
-};
+});
