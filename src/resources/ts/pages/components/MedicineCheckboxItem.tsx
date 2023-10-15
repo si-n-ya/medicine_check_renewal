@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 interface MedicineCheckboxItemProps {
     id: number;
@@ -9,8 +9,9 @@ interface MedicineCheckboxItemProps {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const MedicineCheckboxItem: React.FC<MedicineCheckboxItemProps> = (props) => {
+export const MedicineCheckboxItem: React.FC<MedicineCheckboxItemProps> = memo((props) => {
   const { id, name, labelText, value, checked, onChange } = props;
+  console.log('MedicineCheckboxItem')
   return (
     <>
         <input
@@ -24,4 +25,4 @@ export const MedicineCheckboxItem: React.FC<MedicineCheckboxItemProps> = (props)
         <label htmlFor={`${name}${id}`}>{labelText}</label>
     </>
   );
-};
+});

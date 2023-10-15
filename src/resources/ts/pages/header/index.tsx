@@ -9,7 +9,7 @@ const MedicineHeader = () => {
           <div className="header_container header_flex">
               <div className="header_inner container">
                   <p>
-                      <a href="/" className="top_title">服用チェック</a>
+                      <Link to="/" className="top_title">服用チェック</Link>
                   </p>
                   <button className="btn_hamburger">
                       <span className="hamburger_logo"></span>
