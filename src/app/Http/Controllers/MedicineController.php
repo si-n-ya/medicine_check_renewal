@@ -15,7 +15,7 @@ class MedicineController extends Controller
      */
     public function index()
     {
-        return Medicine::orderByDesc('id')->get();
+        //
     }
 
     /**
