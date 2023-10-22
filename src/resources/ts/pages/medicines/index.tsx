@@ -7,11 +7,12 @@ const MedicineListPage = () => {
   console.log('medicine header render');
 
   const [isStopping, setIsStopping] = useState(true)
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [medicines, setMedicines] = useState<Medicine[]>([])
 
   const fetchMedicines = async () => {
     const data = await getMedicines();
     console.log(data)
+    setMedicines(data)
     setIsStopping(false)
   };
 
@@ -32,18 +33,22 @@ const MedicineListPage = () => {
                         <Link to="/medicine/create" className="btn back">お薬登録</Link>
                     </p>
                 </div>
-                <form className="delete_box">
-                    <div className="medi_list medi_">
-                        <a href="">
-                            <dt className="list_dt">
-                            </dt>
-                            <dd className="list_dd">
-                                <p>残り数： </p>
-                                <p>1回 </p>
-                            </dd>
-                        </a>
-                        <button type="button" data-id="1" className="btn delete_btn list_delete">削除</button>
-                    </div>
+                <form>
+                {medicines.map((medicine: Medicine) => (
+                    <React.Fragment key={medicine.id}>
+                        <div className="medi_list">
+                            <a href="">
+                                <dt className="list_dt">
+                                </dt>
+                                <dd className="list_dd">
+                                    <p>残り数： {medicine.stock_amount}{medicine.unit?.unit_name}</p>
+                                    <p>1回 {medicine.dose_amount}{medicine.unit?.unit_name}</p>
+                                </dd>
+                            </a>
+                            <button type="button" className="btn delete_btn list_delete">削除</button>
+                        </div>
+                    </React.Fragment>
+                ))}
                 </form>
             </main>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
+use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
 use Exception;
@@ -15,7 +16,8 @@ class MedicineController extends Controller
      */
     public function index()
     {
-        return Medicine::orderByDesc('id')->get();
+        $medicines = Medicine::with('unit')->orderByDesc('id')->get();
+        return MedicineResource::collection($medicines);
     }
 
     /**

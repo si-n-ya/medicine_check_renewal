@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Medicine } from '../types/Medicine';
 
 const getMedicines = async() => {
-  const { data } = await axios.get<Medicine[]>('api/medicines');
-  return data;
+  const { data } = await axios.get('/api/medicines');
+  return data.data;
 }
 
 const storeMedicine = async (medicine: Medicine) => {
