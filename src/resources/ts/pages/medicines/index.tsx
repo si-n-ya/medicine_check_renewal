@@ -1,26 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import { Link } from "react-router-dom";
+import { useDeleteMedicine } from '../../queries/MedicineQuery';
+import { useQuery } from 'react-query';
 import { getMedicines } from '../../api/MedicineAPI';
 import { Medicine } from '../../types/Medicine';
 
 const MedicineListPage = () => {
   console.log('medicine header render');
 
-  const [isStopping, setIsStopping] = useState(true)
-  const [medicines, setMedicines] = useState<Medicine[]>([])
+  const { data: medicines, isLoading, isError } = useQuery('medicines', getMedicines);
+  console.log(medicines)
+  const deleteMedicine = useDeleteMedicine();
 
-  const fetchMedicines = async () => {
-    const data = await getMedicines();
-    console.log(data)
-    setMedicines(data)
-    setIsStopping(false)
-  };
-
-  useEffect(() => {
-    fetchMedicines();
-  }, []);
-
-  if (isStopping) return
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>データの読み込みに失敗しました。</div>;
+  if (!medicines || medicines.length <= 0) return <div>登録されたお薬はありません。</div>;
 
   return (
     <>
@@ -45,7 +39,7 @@ const MedicineListPage = () => {
                                     <p>1回 {medicine.dose_amount}{medicine.unit?.unit_name}</p>
                                 </dd>
                             </a>
-                            <button type="button" className="btn delete_btn list_delete">削除</button>
+                            <button type="button" onClick={() => {deleteMedicine.mutate(medicine.id)}} className="btn delete_btn list_delete">削除</button>
                         </div>
                     </React.Fragment>
                 ))}

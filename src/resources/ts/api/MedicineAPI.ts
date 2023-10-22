@@ -14,7 +14,15 @@ const storeMedicine = async (medicine: Medicine) => {
   return data;
 }
 
+const deleteMedicine = async ( id: number) => {
+  const { data } = await axios.delete<Medicine>(
+    `/api/medicines/${id}`
+  );
+  return data;
+}
+
 export {
   getMedicines,
-  storeMedicine
+  storeMedicine,
+  deleteMedicine,
 }

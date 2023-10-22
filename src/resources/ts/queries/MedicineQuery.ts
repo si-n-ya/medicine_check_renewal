@@ -21,6 +21,21 @@ const useStoreMedicine = () => {
   })
 }
 
+const useDeleteMedicine = () => {
+  const queryClient = useQueryClient();
+  return useMutation(api.deleteMedicine, {
+    onSuccess: () => {// 成功
+      // medicines クエリを無効にして、次回のアクセス時に再取得する
+      queryClient.invalidateQueries('medicines')
+      alert('削除に成功しました。')
+    },
+    onError: () => {
+      alert('削除に失敗しました。')
+    }
+  })
+}
+
 export {
-  useStoreMedicine
+  useStoreMedicine,
+  useDeleteMedicine,
 }

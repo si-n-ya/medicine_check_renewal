@@ -74,6 +74,8 @@ class MedicineController extends Controller
      */
     public function destroy(Medicine $medicine)
     {
-        //
+        return $medicine->delete()
+        ? response()->json($medicine)
+        : response()->json($medicine, 500);
     }
 }
