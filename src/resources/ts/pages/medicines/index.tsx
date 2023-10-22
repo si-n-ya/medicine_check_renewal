@@ -1,20 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, {memo} from 'react';
 import { Link } from "react-router-dom";
 import { useDeleteMedicine } from '../../queries/MedicineQuery';
 import { useQuery } from 'react-query';
 import { getMedicines } from '../../api/MedicineAPI';
-import { Medicine } from '../../types/Medicine';
+import MedicineList from '../components/MedicineList';
 
 const MedicineListPage = () => {
   console.log('medicine header render');
 
   const { data: medicines, isLoading, isError } = useQuery('medicines', getMedicines);
-  console.log(medicines)
   const deleteMedicine = useDeleteMedicine();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>データの読み込みに失敗しました。</div>;
   if (!medicines || medicines.length <= 0) return <div>登録されたお薬はありません。</div>;
+  console.log(medicines)
 
   return (
     <>
@@ -27,23 +27,7 @@ const MedicineListPage = () => {
                         <Link to="/medicine/create" className="btn back">お薬登録</Link>
                     </p>
                 </div>
-                <form>
-                {medicines.map((medicine: Medicine) => (
-                    <React.Fragment key={medicine.id}>
-                        <div className="medi_list">
-                            <a href="">
-                                <dt className="list_dt">
-                                </dt>
-                                <dd className="list_dd">
-                                    <p>残り数： {medicine.stock_amount}{medicine.unit?.unit_name}</p>
-                                    <p>1回 {medicine.dose_amount}{medicine.unit?.unit_name}</p>
-                                </dd>
-                            </a>
-                            <button type="button" onClick={() => {deleteMedicine.mutate(medicine.id)}} className="btn delete_btn list_delete">削除</button>
-                        </div>
-                    </React.Fragment>
-                ))}
-                </form>
+                <MedicineList medicines={medicines} onDelete={deleteMedicine.mutate} />
             </main>
         </div>
     </div>
@@ -51,4 +35,4 @@ const MedicineListPage = () => {
   )
 }
 
-export default MedicineListPage
+export default memo(MedicineListPage);
