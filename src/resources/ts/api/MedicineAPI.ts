@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { Medicine } from '../types/Medicine';
 
+const getMedicines = async() => {
+  const { data } = await axios.get('/api/medicines');
+  return data.data;
+}
+
 const storeMedicine = async (medicine: Medicine) => {
   const { data } = await axios.post<Medicine>(
     `/api/medicines/`,// URL
@@ -9,6 +14,15 @@ const storeMedicine = async (medicine: Medicine) => {
   return data;
 }
 
+const deleteMedicine = async ( id: number) => {
+  const { data } = await axios.delete<Medicine>(
+    `/api/medicines/${id}`
+  );
+  return data;
+}
+
 export {
-  storeMedicine
+  getMedicines,
+  storeMedicine,
+  deleteMedicine,
 }
