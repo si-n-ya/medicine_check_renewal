@@ -21,14 +21,6 @@ class MedicineController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created medicine in storage.
      *
      * @param  \App\Http\Requests\StoreMedicineRequest  $request
@@ -50,15 +42,7 @@ class MedicineController extends Controller
      */
     public function show(Medicine $medicine)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Medicine $medicine)
-    {
-        //
+        return response()->json($medicine);
     }
 
     /**
