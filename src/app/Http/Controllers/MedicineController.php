@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
+use App\Http\Resources\MedicineEditResource;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
@@ -42,7 +43,8 @@ class MedicineController extends Controller
      */
     public function show(Medicine $medicine)
     {
-        return response()->json($medicine);
+        $medicine->load('daysOfWeek', 'medicineTimes'); // 関連データをロード
+        return new MedicineEditResource($medicine);
     }
 
     /**

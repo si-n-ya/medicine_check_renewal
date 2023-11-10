@@ -35,7 +35,15 @@ const MedicineEditPage = () => {
 
   const fetchMedicine =async () => {
     const { data } = await axios.get(`/api/medicines/${medicineId}`);
-    console.log(data);
+    console.log(data.data);
+    setInitFormData(data.data)
+  }
+
+  const setInitFormData = (data: Medicine) => {
+    // フォームの初期値を設定
+    setFormData({
+      ...data
+    });
   }
 
   const fetchDaysOfWeek = async () => {
@@ -161,7 +169,7 @@ const MedicineEditPage = () => {
           onChange={handleChange}
         />
         <MedicineFormButton
-          buttonText="登録"
+          buttonText="更新"
         />
     </form>
 </main>
