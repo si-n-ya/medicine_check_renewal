@@ -12,9 +12,9 @@ import { MedicineInput } from '../components/MedicineInput';
 import { MedicineCheckboxGroup } from '../components/MedicineCheckboxGroup';
 import { MedicineDoseAmount } from '../components/MedicineDoseAmount';
 import { MedicineFormButton } from '../components/MedicineFormButton';
-import { updateMedicine } from '../../api/MedicineAPI';
 
 const MedicineEditPage = () => {
+  // TODO 存在しないパラメータでアクセスされた場合のエラー処理
   console.log('medicine edit render');
 
   const { medicineId } = useParams();

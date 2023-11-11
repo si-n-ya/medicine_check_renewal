@@ -8,8 +8,8 @@ use App\Http\Resources\MedicineEditResource;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
+use App\Services\Medicine\UpdateMedicineService;
 use Exception;
-use GuzzleHttp\Psr7\Request;
 
 class MedicineController extends Controller
 {
@@ -49,29 +49,20 @@ class MedicineController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Store a newly updated medicine in storage.
+     *
+     * @param  \App\Http\Requests\UpdateMedicineRequest  $request
+     * @param  \App\Models\Medicine $medicine
+     * @param  \App\Services\Medicine\UpdateMedicineService  $updateMedicineService
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Medicine $medicine)
+    public function update(UpdateMedicineRequest $request, Medicine $medicine, UpdateMedicineService $updateMedicineService)
     {
-        Log::debug($request->all());
         try {
-            DB::beginTransaction();
-            
-            $medicine->update($request->all());
-            
-            $medicine->daysOfWeek()->sync($request->day_of_weeks);
-            foreach ($request->times as $time) {
-                $medicine->medicineTimes()->create([
-                    'time_of_day' => $time,
-                ]);
-            }
-        
-            DB::commit();
+            $updateMedicineService->handle($request, $medicine);
             return response()->json(['success' => '更新に成功しました。']);
         } catch (Exception $e) {
-            DB::rollback();
-            Log::error($e->getMessage());
-            throw new Exception('登録に失敗しました。');
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

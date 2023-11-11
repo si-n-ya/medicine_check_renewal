@@ -15,6 +15,7 @@ class MedicineEditResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'unit_id' => $this->unit_id,
             'start_date' => $this->start_date->format('Y-m-d'),

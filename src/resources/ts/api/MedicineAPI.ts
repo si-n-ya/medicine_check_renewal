@@ -16,7 +16,7 @@ const storeMedicine = async (medicine: Medicine) => {
 
 const updateMedicine = async (medicine: Medicine) => {
   console.log(medicine)
-  const { data } = await axios.post<Medicine>(
+  const { data } = await axios.put<Medicine>(
     `/api/medicines/${medicine['id']}`,// URL
     medicine// 送信するデータ
   );
