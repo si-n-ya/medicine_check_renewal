@@ -5,18 +5,21 @@ import dayjs from 'dayjs';
 import { Medicine } from '../../types/Medicine';
 import { DayOfWeek } from '../../types/DayOfWeek';
 import { Unit } from '../../types/Unit';
-import { useStoreMedicine } from '../../queries/MedicineQuery';
+import { useUpdateMedicine } from '../../queries/MedicineQuery';
 import { getDaysOfWeek } from '../../api/DayOfWeekAPI';
 import { getMedicineUnits } from '../../api/UnitAPI';
 import { MedicineInput } from '../components/MedicineInput';
 import { MedicineCheckboxGroup } from '../components/MedicineCheckboxGroup';
 import { MedicineDoseAmount } from '../components/MedicineDoseAmount';
 import { MedicineFormButton } from '../components/MedicineFormButton';
+import { updateMedicine } from '../../api/MedicineAPI';
 
 const MedicineEditPage = () => {
   console.log('medicine edit render');
 
+  const { medicineId } = useParams();
   const [formData, setFormData] = useState<Medicine>({
+    id: Number(medicineId),
     name: '',
     unit_id: 1,
     start_date: dayjs().format('YYYY-MM-DD'),
@@ -25,9 +28,8 @@ const MedicineEditPage = () => {
     day_of_weeks: [],
     times: [],
   });
-  const { medicineId } = useParams();
-  const storeMedicine = useStoreMedicine();
-  const { error } = storeMedicine;
+  const updateMedicine = useUpdateMedicine();
+  const { error } = updateMedicine;
   const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
   const [medicineUnits, setMedicineUnits] = useState<Unit[]>([]);
   const [isStopping, setIsStopping] = useState(true)
@@ -105,7 +107,7 @@ const MedicineEditPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    storeMedicine.mutate(formData)
+    updateMedicine.mutate(formData)
   };
 
   if (isStopping) return

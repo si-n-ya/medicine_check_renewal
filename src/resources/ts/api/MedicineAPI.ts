@@ -14,6 +14,15 @@ const storeMedicine = async (medicine: Medicine) => {
   return data;
 }
 
+const updateMedicine = async (medicine: Medicine) => {
+  console.log(medicine)
+  const { data } = await axios.post<Medicine>(
+    `/api/medicines/${medicine['id']}`,// URL
+    medicine// 送信するデータ
+  );
+  return data;
+}
+
 const getMedicine = async(id: number) => {
   const { data } = await axios.get(`/api/medicines/${id}`);
   return data.data;
@@ -29,6 +38,7 @@ const deleteMedicine = async ( id: number) => {
 export {
   getMedicines,
   storeMedicine,
+  updateMedicine,
   getMedicine,
   deleteMedicine,
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
 use Exception;
+use GuzzleHttp\Psr7\Request;
 
 class MedicineController extends Controller
 {
@@ -50,9 +51,28 @@ class MedicineController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMedicineRequest $request, Medicine $medicine)
+    public function update(Request $request, Medicine $medicine)
     {
-        //
+        Log::debug($request->all());
+        try {
+            DB::beginTransaction();
+            
+            $medicine->update($request->all());
+            
+            $medicine->daysOfWeek()->sync($request->day_of_weeks);
+            foreach ($request->times as $time) {
+                $medicine->medicineTimes()->create([
+                    'time_of_day' => $time,
+                ]);
+            }
+        
+            DB::commit();
+            return response()->json(['success' => '更新に成功しました。']);
+        } catch (Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            throw new Exception('登録に失敗しました。');
+        }
     }
 
     /**
