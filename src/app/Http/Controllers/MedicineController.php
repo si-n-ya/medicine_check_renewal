@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
+use App\Http\Resources\MedicineEditResource;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
+use App\Services\Medicine\UpdateMedicineService;
 use Exception;
 
 class MedicineController extends Controller
@@ -18,14 +20,6 @@ class MedicineController extends Controller
     {
         $medicines = Medicine::with('unit')->orderByDesc('id')->get();
         return MedicineResource::collection($medicines);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -50,23 +44,26 @@ class MedicineController extends Controller
      */
     public function show(Medicine $medicine)
     {
-        //
+        $medicine->load('daysOfWeek', 'medicineTimes'); // 関連データをロード
+        return new MedicineEditResource($medicine);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Store a newly updated medicine in storage.
+     *
+     * @param  \App\Http\Requests\UpdateMedicineRequest  $request
+     * @param  \App\Models\Medicine $medicine
+     * @param  \App\Services\Medicine\UpdateMedicineService  $updateMedicineService
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit(Medicine $medicine)
+    public function update(UpdateMedicineRequest $request, Medicine $medicine, UpdateMedicineService $updateMedicineService)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMedicineRequest $request, Medicine $medicine)
-    {
-        //
+        try {
+            $updateMedicineService->handle($request, $medicine);
+            return response()->json(['success' => '更新に成功しました。']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**

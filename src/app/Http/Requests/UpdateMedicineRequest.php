@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\MedicineAmountRule;
 
 class UpdateMedicineRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateMedicineRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,15 @@ class UpdateMedicineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'unit_id' => 'required|integer|exists:units,id',
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date_format:Y-m-d',
+            'dose_amount' => ['required', 'numeric', new MedicineAmountRule()],
+            'stock_amount' => ['required', 'numeric', new MedicineAmountRule()],
+            'day_of_weeks' => 'required|array|min:1',
+            'day_of_weeks.*' => 'required|integer|exists:days_of_week,id',
+            'times' => 'required|array|min:1',
+            'times.*' => 'required|integer|between:0,23',
         ];
     }
 }
