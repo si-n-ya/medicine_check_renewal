@@ -21,7 +21,7 @@ const MedicineHeader = () => {
                           <Link to="/medicine" className="nav_link">お薬</Link>
                       </li>
                       <li className="nav_list">
-                          <Link to="/calender" className="nav_link">カレンダー</Link>
+                          <Link to="/record" className="nav_link">記録</Link>
                       </li>
                   </ul>
               </nav>
