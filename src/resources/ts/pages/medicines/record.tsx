@@ -1,14 +1,20 @@
-import React, {memo} from 'react';
+import React, {useCallback, memo} from 'react';
 import { Link } from "react-router-dom";
-import { useDeleteMedicine } from '../../queries/MedicineQuery';
 import { useQuery } from 'react-query';
 import { getMedicines } from '../../api/MedicineAPI';
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import allLocales from '@fullcalendar/core/locales-all';
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 
 const MedicineRecordPage = () => {
   console.log('medicine header render');
 
   const { data: medicines, isLoading, isError } = useQuery('medicines', getMedicines);
-  const deleteMedicine = useDeleteMedicine();
+
+  const handleDateClick = useCallback((arg: DateClickArg) => {
+    alert(arg.dateStr);
+  }, []);
 
   return (
     <>
@@ -20,6 +26,16 @@ const MedicineRecordPage = () => {
                     <p className="back_box btn_center">
                         <Link to="/" className="btn back">メニューへ戻る</Link>
                     </p>
+                </div>
+                <div style={{ backgroundColor: '#fff' }}>
+                    <FullCalendar
+                        plugins={[dayGridPlugin]}
+                        initialView="dayGridMonth"
+                        locales={allLocales}
+                        locale="ja"
+                        dateClick={handleDateClick}
+                        // businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
+                    />
                 </div>
                 <ul className="list_all">
                     <label htmlFor="check_1" className="name_check">
