@@ -1,7 +1,8 @@
 import React, {useState, useCallback, useRef, memo} from 'react';
 import { Link } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { getMedicines } from '../../api/MedicineAPI';
+import { getRecordMedicines } from '../../api/MedicineAPI';
 import { useNavigate } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -11,10 +12,16 @@ import dayjs from 'dayjs';
 
 const MedicineRecordPage = () => {
   console.log('medicine header render');
+  const { date } = useParams();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const calendarRef = useRef(null);
   const navigate = useNavigate();
-  const { data: medicines, isLoading, isError } = useQuery('medicines', getMedicines);
+  const { data: medicines, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>データの読み込みに失敗しました。</div>;
+  if (!medicines || medicines.length <= 0) return <div>登録されたお薬はありません。</div>;
+  console.log(medicines)
 
   const handleDateClick = useCallback((arg: DateClickArg) => {
     // 日付をクリック時
@@ -81,20 +88,23 @@ const MedicineRecordPage = () => {
                     />
                 </div>
                 <ul className="list_all">
-                    <label htmlFor="check_1" className="name_check">
+                {medicines.map(medicine => (
+                    <label htmlFor={`check_${medicine.id}`} className="name_check">
                         <li className="list_one hover">
-                            <input type="checkbox" className="check" id="check_1" />
+                            <input type="checkbox" className="check" id={`check_${medicine.id}`} />
                             <span className="list name_list">
-                                薬名
+                                {medicine.name}
                             </span>
                             <span className="list num_list">
-                                1錠
+                                {medicine.dose_amount}{medicine.unit?.unit_name}
                             </span>
                             <span className="list time_list">
                                 1:00
+                                {medicine.medicine_times?.time_of_day}
                             </span>
                         </li>
                     </label>
+                 ))}
                 </ul>
             </main>
         </div>
