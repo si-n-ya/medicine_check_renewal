@@ -9,7 +9,9 @@ use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
 use App\Services\Medicine\UpdateMedicineService;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 
 class MedicineController extends Controller
 {
@@ -46,6 +48,23 @@ class MedicineController extends Controller
     {
         $medicine->load('daysOfWeek', 'medicineTimes'); // 関連データをロード
         return new MedicineEditResource($medicine);
+    }
+
+    public function getMedicinesOfday(Request $request)
+    {
+        $day = $request->input('date');
+        try {
+            $carbon = new Carbon($day);
+        } catch (Exception $e) {
+            $carbon = Carbon::now();
+        }
+        $week = $carbon->dayOfWeek();
+        $medicines = Medicine::with('unit')
+            ->with('medicine_times')
+            ->with('medicine_days')
+            ->where('day_of_week_id', $week)
+            ->get();
+        return MedicineResource::collection($medicines);
     }
 
     /**
