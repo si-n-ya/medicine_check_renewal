@@ -29,6 +29,12 @@ class Medicine extends Model
         return $this->belongsToMany(DayOfWeek::class, 'medicine_days')->withTimestamps();
     }
 
+    public function medicineDays()
+    {
+        // 中間テーブル（medicine_days）のcreated_at、update_atを自動的に更新
+        return $this->hasMany(MedicineDay::class, 'medicine_days');
+    }
+
     public function medicineTimes()
     {
         return $this->hasMany(MedicineTime::class);

@@ -1,25 +1,59 @@
-import React, {useState, useCallback, useRef, memo} from 'react';
+import React, {useState, useEffect, useCallback, useRef, memo} from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getRecordMedicines } from '../../api/MedicineAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import dayjs from 'dayjs';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { Medicine } from '../../types/Medicine';
 
 const MedicineRecordPage = () => {
   console.log('medicine header render');
-  const { date } = useParams();
+  const locationSearch = useLocation().search;
+  const urlSearchParams = new URLSearchParams(locationSearch);
+  const dateParam = urlSearchParams.get('date');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const calendarRef = useRef(null);
   const navigate = useNavigate();
-  const { data: medicines, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
+  // const { data: medicines, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // const getRecordMedicines = async(date: string | undefined) => {
+  //   const { data } = await axios.get('/api/medicinesOfday', {
+  //     params: {
+  //       date: date
+  //     }
+  //   });
+  //   return data.data;
+  // }
+
+  useEffect(() => {
+    const init = async () => {
+      axios
+        .get('/api/medicinesOfday', {
+          params: {
+            date: dateParam
+          }
+        })
+        .then((response: AxiosResponse) => {
+          console.log(response.data);
+          setMedicines(response.data.data);
+          setIsLoading(false)
+        })
+        .catch((err: AxiosError) => console.log(err.response))
+        // .finally(() => setIsLoading(false));
+    };
+    init();
+  }, []);
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>データの読み込みに失敗しました。</div>;
+  // if (isError) return <div>データの読み込みに失敗しました。</div>;
   if (!medicines || medicines.length <= 0) return <div>登録されたお薬はありません。</div>;
   console.log(medicines)
 
