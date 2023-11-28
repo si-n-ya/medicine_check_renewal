@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('medicines', 'App\Http\Controllers\MedicineController');
+Route::get('medicinesOfday', ['App\Http\Controllers\MedicineController', 'getMedicinesOfday']);
 Route::get('daysOfWeek', ['App\Http\Controllers\DayOfWeekController', 'fetch']);
 Route::get('medicineUnits', ['App\Http\Controllers\UnitController', 'fetch']);
 

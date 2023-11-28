@@ -6,6 +6,15 @@ const getMedicines = async() => {
   return data.data;
 }
 
+const getRecordMedicines = async(date: string | undefined) => {
+  const { data } = await axios.get('/api/medicinesOfday', {
+    params: {
+      date: date
+    }
+  });
+  return data.data;
+}
+
 const storeMedicine = async (medicine: Medicine) => {
   const { data } = await axios.post<Medicine>(
     `/api/medicines/`,// URL
@@ -37,6 +46,7 @@ const deleteMedicine = async ( id: number) => {
 
 export {
   getMedicines,
+  getRecordMedicines,
   storeMedicine,
   updateMedicine,
   getMedicine,
