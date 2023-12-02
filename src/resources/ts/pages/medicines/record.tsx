@@ -23,6 +23,7 @@ const MedicineRecordPage = () => {
   // const { data: medicines, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   // const getRecordMedicines = async(date: string | undefined) => {
   //   const { data } = await axios.get('/api/medicinesOfday', {
@@ -32,6 +33,12 @@ const MedicineRecordPage = () => {
   //   });
   //   return data.data;
   // }
+
+  useEffect(() => {
+    // 初期表示時に、URLパラメータのdateの日付からselectedDateを設定
+    const parsedDate = dateParam ? new Date(dateParam) : new Date();
+    setSelectedDate(parsedDate);
+  }, [])
 
   useEffect(() => {
     const init = async () => {
@@ -54,7 +61,7 @@ const MedicineRecordPage = () => {
         // .finally(() => setIsLoading(false));
     };
     init();
-  }, []);
+  }, [dateParam]);
 
   const handleDateClick = useCallback((arg: DateClickArg) => {
     // 日付をクリック時
@@ -63,8 +70,17 @@ const MedicineRecordPage = () => {
   }, [navigate]);
 
   const handleDatesSet = useCallback((arg) => {
+    console.log('handleDatesSet実行')
     // prev・nextをクリック時
     // 月の初日を正しく計算
+
+      // 初期表示時にhandleDatesSetが実行され、URLパラメータがその月の初日に変更されてしまうため、初期レンダリング時には何もしない
+      console.log('isInitialRenderの値', isInitialRender)
+    if (isInitialRender) {
+      // TODO 前後のカレンダーに移動した際に、「isInitialRender」が「true」になってしまうため、この分岐に入ってしまい、URLパラメータが変わらない。
+      setIsInitialRender(false);
+      return;
+    }
     const currentView = arg.view;
     const firstDayOfMonth = new Date(currentView.currentStart.getFullYear(), currentView.currentStart.getMonth(), 1);
     setSelectedDate(firstDayOfMonth);
@@ -73,6 +89,7 @@ const MedicineRecordPage = () => {
   }, [navigate]);
 
   const handleTodayClick = useCallback(() => {
+    console.log('handleTodayClickが実行')
     // 「今日」をクリック時
     const today = new Date();
     setSelectedDate(today);
@@ -112,6 +129,14 @@ const MedicineRecordPage = () => {
                               text: '今日',
                               click: handleTodayClick,
                             },
+                            // prev: {
+                            //   text: '<',
+                            //   click: handleDatesSet,
+                            // },
+                            // next: {
+                            //   text: '>',
+                            //   click: handleDatesSet,
+                            // },
                           }}
                           headerToolbar={{
                             left: 'prev,next myTodayButton',
@@ -119,7 +144,10 @@ const MedicineRecordPage = () => {
                             right: ''
                           }}
                           dayCellClassNames={(date) => {
-                            return date.date.getTime() === selectedDate.getTime() ? 'selected-date' : '';
+                            // dayjsにより、セルの日付と選択した日付を比較し、背景色のクラスを付与
+                            const dateStr = dayjs(date.date).format('YYYY-MM-DD');
+                            const selectedDateStr = dayjs(selectedDate).format('YYYY-MM-DD');
+                            return dateStr === selectedDateStr ? 'selected-date' : '';
                         }}
                         // businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
                     />
