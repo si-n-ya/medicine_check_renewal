@@ -32,7 +32,8 @@ class Medicine extends Model
     public function medicineDays()
     {
         // 中間テーブル（medicine_days）のcreated_at、update_atを自動的に更新
-        return $this->hasMany(MedicineDay::class, 'medicine_days');
+        // hasManyの第二引数は外部キーを指定する
+        return $this->hasMany(MedicineDay::class, 'medicine_id');
     }
 
     public function medicineTimes()

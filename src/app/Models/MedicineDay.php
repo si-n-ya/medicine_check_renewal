@@ -20,6 +20,6 @@ class MedicineDay extends Model
 
     public function dayOfWeek()
     {
-        return $this->belongsTo(Medicine::class);
+        return $this->belongsTo(DayOfWeek::class);
     }
 }

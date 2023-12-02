@@ -42,20 +42,19 @@ const MedicineRecordPage = () => {
           }
         })
         .then((response: AxiosResponse) => {
+          console.log('成功');
           console.log(response.data);
           setMedicines(response.data.data);
           setIsLoading(false)
         })
-        .catch((err: AxiosError) => console.log(err.response))
+        .catch((err: AxiosError) =>  {
+          console.log(err.response)
+          console.log(err)
+        })
         // .finally(() => setIsLoading(false));
     };
     init();
   }, []);
-
-  if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>データの読み込みに失敗しました。</div>;
-  if (!medicines || medicines.length <= 0) return <div>登録されたお薬はありません。</div>;
-  console.log(medicines)
 
   const handleDateClick = useCallback((arg: DateClickArg) => {
     // 日付をクリック時
@@ -83,6 +82,10 @@ const MedicineRecordPage = () => {
     const calendarApi = calendarRef.current.getApi();
     calendarApi.today();
   }, [navigate]);
+
+  if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>データの読み込みに失敗しました。</div>;
+  console.log(medicines)
 
   return (
     <>
@@ -121,9 +124,10 @@ const MedicineRecordPage = () => {
                         // businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
                     />
                 </div>
+                {medicines.length > 0 ? (
                 <ul className="list_all">
                 {medicines.map(medicine => (
-                    <label htmlFor={`check_${medicine.id}`} className="name_check">
+                    <label htmlFor={`check_${medicine.id}`} className="name_check" key={medicine.id}>
                         <li className="list_one hover">
                             <input type="checkbox" className="check" id={`check_${medicine.id}`} />
                             <span className="list name_list">
@@ -140,6 +144,9 @@ const MedicineRecordPage = () => {
                     </label>
                  ))}
                 </ul>
+                ) : (
+                  <div>登録されたお薬はありません。</div>
+                )}
             </main>
         </div>
     </div>

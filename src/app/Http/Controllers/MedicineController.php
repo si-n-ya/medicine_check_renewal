@@ -71,8 +71,8 @@ class MedicineController extends Controller
         //     ->where('medicine_days.day_of_week_id', $week + 1)
         //     ->get();
 
-        $medicines = Medicine::with('unit', 'medicine_times', 'medicine_days')
-        ->whereHas('medicine_days', function ($query) use ($week) {
+        $medicines = Medicine::with('unit', 'medicineTimes', 'medicineDays')
+        ->whereHas('medicineDays', function ($query) use ($week) {
             $query->where('day_of_week_id', $week + 1);
         })
         ->get();
