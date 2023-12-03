@@ -38,6 +38,21 @@ const useUpdateMedicine = () => {
   })
 }
 
+const useUpdateRecordMedicine = () => {
+  const queryClient = useQueryClient();
+  const [error, setError] = useState<AxiosError | null>(null);
+
+  return useMutation(api.updateRecordMedicine, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('medicines')// コンポーネントを再描画
+    },
+    onError: (axiosError: AxiosError) => {
+      console.log(axiosError.response);
+      setError(axiosError);
+    }
+  })
+}
+
 const useDeleteMedicine = () => {
   const queryClient = useQueryClient();
   return useMutation(api.deleteMedicine, {
@@ -55,5 +70,6 @@ const useDeleteMedicine = () => {
 export {
   useStoreMedicine,
   useUpdateMedicine,
+  useUpdateRecordMedicine,
   useDeleteMedicine,
 }

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getRecordMedicines } from '../../api/MedicineAPI';
+import { useUpdateRecordMedicine } from '../../queries/MedicineQuery';
 import { useNavigate, useLocation } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -24,6 +25,7 @@ const MedicineRecordPage = () => {
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const updateRecordMedicine = useUpdateRecordMedicine()
 
   // const getRecordMedicines = async(date: string | undefined) => {
   //   const { data } = await axios.get('/api/medicinesOfday', {
@@ -36,6 +38,8 @@ const MedicineRecordPage = () => {
 
   useEffect(() => {
     // 初期表示時に、URLパラメータのdateの日付からselectedDateを設定
+    console.log('dateParamの値')
+    console.log(dateParam)
     const parsedDate = dateParam ? new Date(dateParam) : new Date();
     setSelectedDate(parsedDate);
   }, [])
@@ -157,7 +161,12 @@ const MedicineRecordPage = () => {
                 {medicines.map(medicine => (
                     <label htmlFor={`check_${medicine.id}`} className="name_check" key={medicine.id}>
                         <li className="list_one hover">
-                            <input type="checkbox" className="check" id={`check_${medicine.id}`} />
+                            <input
+                              type="checkbox"
+                              className="check"
+                              id={`check_${medicine.id}`}
+                              onClick={() => updateRecordMedicine.mutate(medicine.id)}
+                            />
                             <span className="list name_list">
                                 {medicine.name}
                             </span>

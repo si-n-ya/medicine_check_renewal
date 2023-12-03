@@ -32,6 +32,13 @@ const updateMedicine = async (medicine: Medicine) => {
   return data;
 }
 
+const updateRecordMedicine = async (id: number) => {
+  const { data } = await axios.put<Medicine>(
+    `/api/medicines/record/${id}`,
+  );
+  return data;
+}
+
 const getMedicine = async(id: number) => {
   const { data } = await axios.get(`/api/medicines/${id}`);
   return data.data;
@@ -49,6 +56,7 @@ export {
   getRecordMedicines,
   storeMedicine,
   updateMedicine,
+  updateRecordMedicine,
   getMedicine,
   deleteMedicine,
 }

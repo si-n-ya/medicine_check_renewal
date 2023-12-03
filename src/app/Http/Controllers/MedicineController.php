@@ -97,6 +97,15 @@ class MedicineController extends Controller
         }
     }
 
+    public function updateRecordMedicine(Medicine $medicine) {
+        try {
+            $updateMedicineService->handle($request, $medicine);
+            return response()->json(['success' => '更新に成功しました。']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */
