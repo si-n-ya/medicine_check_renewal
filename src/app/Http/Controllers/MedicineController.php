@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
 use App\Http\Resources\MedicineEditResource;
+use App\Http\Resources\MedicineRecordResource;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\Medicine\CreateMedicineService;
@@ -76,7 +77,7 @@ class MedicineController extends Controller
             $query->where('day_of_week_id', $week + 1);
         })
         ->get();
-        return MedicineResource::collection($medicines);
+        return MedicineRecordResource::collection($medicines);
     }
 
     /**

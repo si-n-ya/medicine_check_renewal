@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('medicine_logs', function (Blueprint $table) {
             $table->id();
-            // TODO cascadeにするか検討
-            $table->foreignId('medicine_id')->constrained()->onDelete('cascade');
+            // 元のデータが変更または削除された場合にログデータは変更されず、ログの取り消しを行った場合は、元に戻すため、「onDelete('set null');にして、「medicines」レコードが存在しなくても維持できるようにする
+            $table->foreignId('medicine_id')->nullable()->constrained()->onDelete('set null');
             $table->string('name');
             $table->integer('time');
             $table->date('date_taken');

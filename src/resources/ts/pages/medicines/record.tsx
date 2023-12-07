@@ -11,7 +11,7 @@ import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import dayjs from 'dayjs';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { Medicine } from '../../types/Medicine';
+import { Medicine } from '../../types/MedicineRecord';
 
 const MedicineRecordPage = () => {
   console.log('medicine header render');
@@ -159,26 +159,28 @@ const MedicineRecordPage = () => {
                 {medicines.length > 0 ? (
                 <ul className="list_all">
                 {medicines.map(medicine => (
-                    <label htmlFor={`check_${medicine.id}`} className="name_check" key={medicine.id}>
-                        <li className="list_one hover">
-                            <input
-                              type="checkbox"
-                              className="check"
-                              id={`check_${medicine.id}`}
-                              onClick={() => updateRecordMedicine.mutate(medicine.id)}
-                            />
-                            <span className="list name_list">
-                                {medicine.name}
-                            </span>
-                            <span className="list num_list">
-                                {medicine.dose_amount}{medicine.unit?.unit_name}
-                            </span>
-                            <span className="list time_list">
-                                1:00
-                                {medicine.medicine_times?.time_of_day}
-                            </span>
-                        </li>
-                    </label>
+                    medicine.medicine_times.map(medicine_time => (
+                      // TODO 並び順を薬順ではなく、時間の昇順にする
+                      <label htmlFor={`check_${medicine_time.id}`} className="name_check" key={medicine_time.id}>
+                          <li className="list_one hover">
+                              <input
+                                type="checkbox"
+                                className="check"
+                                id={`check_${medicine_time.id}`}
+                                onClick={() => updateRecordMedicine.mutate(medicine_time.id)}
+                              />
+                              <span className="list name_list">
+                                  {medicine.name}
+                              </span>
+                              <span className="list num_list">
+                                  {medicine.dose_amount}{medicine.unit?.unit_name}
+                              </span>
+                              <span className="list time_list">
+                                  {medicine_time.time_of_day}:00
+                              </span>
+                          </li>
+                      </label>
+                  ))
                  ))}
                 </ul>
                 ) : (
