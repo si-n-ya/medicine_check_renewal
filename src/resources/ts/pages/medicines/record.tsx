@@ -11,7 +11,7 @@ import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import dayjs from 'dayjs';
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { Medicine } from '../../types/MedicineRecord';
+import { MedicineRecord } from '../../types/MedicineRecord';
 
 const MedicineRecordPage = () => {
   console.log('medicine header render');
@@ -21,8 +21,8 @@ const MedicineRecordPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const calendarRef = useRef(null);
   const navigate = useNavigate();
-  // const { data: medicines, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  // const { data: medicineRecords, isLoading, isError } = useQuery('getRecordMedicines', getRecordMedicines);
+  const [medicineRecords, setMedicineRecords] = useState<MedicineRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialRender, setIsInitialRender] = useState(true);
   const updateRecordMedicine = useUpdateRecordMedicine()
@@ -55,7 +55,7 @@ const MedicineRecordPage = () => {
         .then((response: AxiosResponse) => {
           console.log('成功');
           console.log(response.data);
-          setMedicines(response.data.data);
+          setMedicineRecords(response.data.data);
           setIsLoading(false)
         })
         .catch((err: AxiosError) =>  {
@@ -106,7 +106,7 @@ const MedicineRecordPage = () => {
 
   if (isLoading) return <div>Loading...</div>;
   // if (isError) return <div>データの読み込みに失敗しました。</div>;
-  console.log(medicines)
+  console.log(medicineRecords)
 
   return (
     <>
@@ -156,9 +156,9 @@ const MedicineRecordPage = () => {
                         // businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
                     />
                 </div>
-                {medicines.length > 0 ? (
+                {medicineRecords.length > 0 ? (
                 <ul className="list_all">
-                {medicines.map(medicine => (
+                {medicineRecords.map(medicine => (
                     medicine.medicine_times.map(medicine_time => (
                       // TODO 並び順を薬順ではなく、時間の昇順にする
                       <label htmlFor={`check_${medicine_time.id}`} className="name_check" key={medicine_time.id}>

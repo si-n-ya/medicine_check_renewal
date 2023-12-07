@@ -72,6 +72,7 @@ class MedicineController extends Controller
         //     ->where('medicine_days.day_of_week_id', $week + 1)
         //     ->get();
 
+        // TODO start_date以降のお薬一覧を取得する
         $medicines = Medicine::with('unit', 'medicineTimes', 'medicineDays')
         ->whereHas('medicineDays', function ($query) use ($week) {
             $query->where('day_of_week_id', $week + 1);

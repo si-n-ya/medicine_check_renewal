@@ -22,8 +22,8 @@ class MedicineRecordResource extends JsonResource
             'start_date' => $this->start_date,
             'dose_amount' => $this->dose_amount,
             'stock_amount' => $this->stock_amount,
-            'medicine_times' => $this->medicineTimes,
-            'medicine_days' => $this->medicineDays,
+            'medicine_times' => MedicineTimeResource::collection($this->medicineTimes),
+            'medicine_days' => MedicineDayResource::collection($this->medicineDays),    
         ];
     }
 }
