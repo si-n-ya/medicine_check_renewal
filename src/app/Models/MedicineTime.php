@@ -21,4 +21,11 @@ class MedicineTime extends Model
     {
         return $this->belongsTo(Medicine::class);
     }
+
+    // MedicineLog へのリレーションは一対一の関係
+    // 外部キーを持たないモデル（MedicineTime）は hasOne リレーションを使用
+    public function medicineLog()
+    {
+        return $this->hasOne(MedicineLog::class);
+    }
 }

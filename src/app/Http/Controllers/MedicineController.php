@@ -8,6 +8,8 @@ use App\Http\Resources\MedicineEditResource;
 use App\Http\Resources\MedicineRecordResource;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
+use App\Models\MedicineLog;
+use App\Models\MedicineTime;
 use App\Services\Medicine\CreateMedicineService;
 use App\Services\Medicine\UpdateMedicineService;
 use Carbon\Carbon;
@@ -99,11 +101,24 @@ class MedicineController extends Controller
         }
     }
 
-    public function updateRecordMedicine(Medicine $medicine) {
+    public function updateRecordMedicine(Request $request, MedicineTime $medicine_time) {
+        Log::debug('updateRecordMedicine');
+        Log::debug($medicine_time);
+        Log::debug($request);
+        // TODO すでに登録されている場合は、「すでにチェックされていることをエラーで返す」
+        // TODO 削除時の検討（フラグを立てるのみで良さそう）
         try {
-            $updateMedicineService->handle($request, $medicine);
-            return response()->json(['success' => '更新に成功しました。']);
+            $medicine_log = new MedicineLog();
+            $medicine_log->fill([
+                'medicine_time_id' => $medicine_time->id,
+                'name' => $medicine_time->medicine->name,
+                'time' => $medicine_time->time_of_day,
+                'date_taken' => $request->date,
+                'amount_taken' => $medicine_time->medicine->dose_amount,// TODO 入力可能にする
+            ])->save();
+            return response()->json(['success' => 'チェックに成功しました。']);
         } catch (Exception $e) {
+            Log::error($e);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

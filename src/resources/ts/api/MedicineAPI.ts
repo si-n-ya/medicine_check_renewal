@@ -32,9 +32,15 @@ const updateMedicine = async (medicine: Medicine) => {
   return data;
 }
 
-const updateRecordMedicine = async (id: number) => {
+type UpdateMedicineRecordParams = {
+  id: number;
+  date: string | null;
+};
+
+const updateRecordMedicine = async ({ id, date }: UpdateMedicineRecordParams) => {
   const { data } = await axios.put<Medicine>(
     `/api/medicines/record/${id}`,
+    { date } // dateをリクエストボディに含める
   );
   return data;
 }

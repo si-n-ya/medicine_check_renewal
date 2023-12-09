@@ -10,11 +10,12 @@ class MedicineLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'medicine_id', 'day_of_week_id'
+        'medicine_time_id', 'name', 'time', 'date_taken', 'amount_taken',
     ];
 
-    public function medicine()
+    // 外部キーを持つモデル（MedicineLog）は belongsTo リレーションを使用
+    public function medicineTime()
     {
-        return $this->belongsTo(Medicine::class);
+        return $this->belongsTo(medicineTime::class);
     }
 }

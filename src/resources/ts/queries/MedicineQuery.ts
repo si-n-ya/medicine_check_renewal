@@ -38,11 +38,18 @@ const useUpdateMedicine = () => {
   })
 }
 
+type UpdateMedicineRecordParams = {
+  id: number;
+  date: string | null;
+};
+
 const useUpdateRecordMedicine = () => {
   const queryClient = useQueryClient();
   const [error, setError] = useState<AxiosError | null>(null);
 
-  return useMutation(api.updateRecordMedicine, {
+  return useMutation(
+    (params: UpdateMedicineRecordParams) => api.updateRecordMedicine(params), // 引数を受け取り、API関数に渡す
+    {
     onSuccess: () => {
       queryClient.invalidateQueries('medicines')// コンポーネントを再描画
     },

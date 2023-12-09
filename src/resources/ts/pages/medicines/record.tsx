@@ -104,6 +104,20 @@ const MedicineRecordPage = () => {
     calendarApi.today();
   }, [navigate]);
 
+  const handleUpdateClick = (medicineTimeId: number, dateParam: string | null) => {
+    updateRecordMedicine.mutate(
+      { id: medicineTimeId, date: dateParam },
+      {
+        onSuccess: () => {
+          alert('成功しました。');
+        },
+        onError: () => {
+          alert('失敗しました。');
+        },
+      }
+    );
+  };
+
   if (isLoading) return <div>Loading...</div>;
   // if (isError) return <div>データの読み込みに失敗しました。</div>;
   console.log(medicineRecords)
@@ -167,7 +181,8 @@ const MedicineRecordPage = () => {
                                 type="checkbox"
                                 className="check"
                                 id={`check_${medicine_time.id}`}
-                                onClick={() => updateRecordMedicine.mutate(medicine_time.id)}
+                                // onClick={() => updateRecordMedicine.mutate({ id: medicine_time.id, date: dateParam })}
+                                onClick={() => handleUpdateClick(medicine_time.id, dateParam)}
                               />
                               <span className="list name_list">
                                   {medicine.name}
